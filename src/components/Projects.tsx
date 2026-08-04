@@ -185,7 +185,7 @@ export default function Projects() {
                 </div>
 
                 {/* Links */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <a
                     href={project.githubUrl}
                     target="_blank"
@@ -201,11 +201,11 @@ export default function Projects() {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`${project.title} Live`}
-                      className="flex items-center gap-1.5 text-white/50 hover:text-deep-cyan transition-colors duration-200 text-sm font-mono"
+                      aria-label={`${project.title} Live Demo`}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border border-cyber-green/40 text-cyber-green bg-cyber-green/10 hover:bg-cyber-green hover:text-black hover:shadow-[0_0_16px_rgba(16,185,129,0.5)] transition-all duration-200"
                     >
-                      <ExternalLink size={14} />
-                      <span>Live</span>
+                      <ExternalLink size={11} />
+                      <span>Live Demo</span>
                     </a>
                   )}
                 </div>

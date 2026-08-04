@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Mail, Code2, Brain, Database, Cloud } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const GithubIcon = () => (
   <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -62,6 +63,7 @@ export default function Hero() {
   const [textIndex, setTextIndex] = useState(0);
   const [displayed, setDisplayed] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [hoveredName, setHoveredName] = useState(false);
 
   useEffect(() => {
     const current = typewriterTexts[textIndex];
@@ -122,7 +124,51 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight tracking-tight mb-2">
-                <span className="text-white">Venkatesh</span>
+                {/* "Venkatesh" — hover reveals profile photo */}
+                <span
+                  className="relative inline-block cursor-default select-none"
+                  onMouseEnter={() => setHoveredName(true)}
+                  onMouseLeave={() => setHoveredName(false)}
+                >
+                  <span className="text-white transition-colors duration-200 hover:text-cyber-green">
+                    Venkatesh
+                  </span>
+
+                  {/* Profile photo tooltip */}
+                  <AnimatePresence>
+                    {hoveredName && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.75, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.75, y: 10 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                        className="absolute -top-56 left-0 z-50 pointer-events-none"
+                        aria-hidden="true"
+                      >
+                        {/* Glassmorphic card */}
+                        <div className="relative w-44 rounded-2xl overflow-hidden border border-cyber-green/30 shadow-[0_0_40px_rgba(16,185,129,0.35)] bg-black/60 backdrop-blur-xl">
+                          {/* Neon top bar */}
+                          <div className="h-1 w-full bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple" />
+                          <Image
+                            src="/images/Venkatesh.png"
+                            alt="Venkatesh Manipati"
+                            width={176}
+                            height={210}
+                            className="w-full object-cover object-top"
+                            priority
+                          />
+                          {/* Name tag overlay at bottom */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-3 py-2">
+                            <p className="text-cyber-green text-[10px] font-mono tracking-widest">VENKATESH MANIPATI</p>
+                            <p className="text-white/50 text-[9px] font-mono">MERN Stack Dev</p>
+                          </div>
+                        </div>
+                        {/* Arrow pointer */}
+                        <div className="w-3 h-3 mx-6 border-l border-b border-cyber-green/30 bg-black/60 rotate-[-45deg] -mt-1.5" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </span>
                 <br />
                 <span className="bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple bg-clip-text text-transparent">
                   Manipati
