@@ -9,32 +9,29 @@ const certifications = [
   {
     name: 'Machine Learning Specialization',
     issuer: 'Coursera · DeepLearning.AI',
-    logo: '/images/tensorflow-logo.svg',
-    badge: '/images/coursera-logo.png',
-    useBadge: true,
+    techLogo: '/images/tensorflow-logo.svg',   // TensorFlow (subject matter)
+    issuerLogo: '/images/coursera-logo.svg',   // Coursera branded SVG
     color: '#0056d2',
-    bg: 'rgba(0,86,210,0.12)',
-    border: 'rgba(0,86,210,0.3)',
+    bg: 'rgba(0,86,210,0.10)',
+    border: 'rgba(0,86,210,0.28)',
   },
   {
     name: 'Java SE 17 Developer',
     issuer: 'Oracle Certified',
-    logo: '/images/java-logo.svg',
-    badge: '/images/oracle-logo.png',
-    useBadge: false,
+    techLogo: '/images/java-logo.svg',
+    issuerLogo: '/images/oracle-logo.svg',
     color: '#f97316',
-    bg: 'rgba(249,115,22,0.12)',
-    border: 'rgba(249,115,22,0.3)',
+    bg: 'rgba(249,115,22,0.10)',
+    border: 'rgba(249,115,22,0.28)',
   },
   {
     name: 'MongoDB Associate Developer',
     issuer: 'MongoDB University',
-    logo: '/images/mongodb-logo.svg',
-    badge: null,
-    useBadge: false,
+    techLogo: '/images/mongodb-logo.svg',
+    issuerLogo: '/images/mongodb-logo.svg',
     color: '#10b981',
-    bg: 'rgba(16,185,129,0.12)',
-    border: 'rgba(16,185,129,0.3)',
+    bg: 'rgba(16,185,129,0.10)',
+    border: 'rgba(16,185,129,0.28)',
   },
 ];
 
@@ -154,66 +151,56 @@ export default function Skills() {
           <p className="text-white/30 font-mono text-xs tracking-widest uppercase mb-6">
             // certifications
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {certifications.map((cert) => (
               <motion.div
                 key={cert.name}
-                whileHover={{ y: -4, scale: 1.02 }}
-                className="group relative rounded-xl border bg-white/4 backdrop-blur-sm p-5 overflow-hidden transition-all duration-300"
-                style={{
-                  borderColor: cert.border,
-                  backgroundColor: cert.bg,
-                }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="group relative rounded-2xl border backdrop-blur-sm p-5 overflow-hidden transition-all duration-300 cursor-default"
+                style={{ borderColor: cert.border, backgroundColor: cert.bg }}
               >
-                {/* Radial glow on hover */}
+                {/* Hover radial glow */}
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(circle at 30% 30%, ${cert.bg}, transparent 70%)`,
-                  }}
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+                  style={{ background: `radial-gradient(circle at 20% 20%, ${cert.bg}, transparent 65%)` }}
                 />
 
-                {/* Logo row */}
-                <div className="flex items-center gap-3 mb-4">
-                  {/* Tech icon (SVG) */}
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center p-2 bg-white/90 shadow-md flex-shrink-0"
-                  >
+                {/* Logo pair */}
+                <div className="flex items-center gap-2.5 mb-4">
+                  {/* Tech subject logo */}
+                  <div className="w-11 h-11 rounded-xl bg-white/90 shadow p-1.5 flex items-center justify-center flex-shrink-0">
                     <Image
-                      src={cert.logo}
+                      src={cert.techLogo}
                       alt={cert.name}
-                      width={36}
-                      height={36}
-                      className="object-contain"
+                      width={32}
+                      height={32}
+                      className="object-contain w-full h-full"
                     />
                   </div>
-
-                  {/* Issuer badge logo */}
-                  {cert.useBadge && cert.badge && (
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/90 p-1 shadow-md flex-shrink-0">
-                      <Image
-                        src={cert.badge}
-                        alt={cert.issuer}
-                        width={32}
-                        height={32}
-                        className="object-contain"
-                      />
-                    </div>
-                  )}
+                  {/* Issuer logo */}
+                  <div className="w-9 h-9 rounded-lg bg-white/90 shadow p-1 flex items-center justify-center flex-shrink-0">
+                    <Image
+                      src={cert.issuerLogo}
+                      alt={cert.issuer}
+                      width={28}
+                      height={28}
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
                 </div>
 
                 {/* Text */}
                 <p
-                  className="font-bold text-sm leading-snug group-hover:text-white transition-colors"
+                  className="font-bold text-sm leading-snug mb-1.5 group-hover:text-white transition-colors duration-200"
                   style={{ color: cert.color }}
                 >
                   {cert.name}
                 </p>
-                <p className="text-white/40 text-xs font-mono mt-1.5">{cert.issuer}</p>
+                <p className="text-white/40 text-xs font-mono">{cert.issuer}</p>
 
-                {/* Bottom accent line */}
+                {/* Bottom gradient line */}
                 <div
-                  className="mt-4 h-0.5 rounded-full w-full opacity-40 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 opacity-40 group-hover:opacity-100 transition-opacity duration-300"
                   style={{ background: `linear-gradient(90deg, ${cert.color}, transparent)` }}
                 />
               </motion.div>
