@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { ArrowRight, Mail, Code2, Brain, Database, Cloud } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -65,6 +65,19 @@ export default function Hero() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredName, setHoveredName] = useState(false);
 
+  // Cursor-following spring values
+  const rawX = useMotionValue(-300);
+  const rawY = useMotionValue(-300);
+  const springConfig = { damping: 20, stiffness: 280, mass: 0.6 };
+  const x = useSpring(rawX, springConfig);
+  const y = useSpring(rawY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    // Offset so avatar centre sits above-right of cursor tip
+    rawX.set(e.clientX + 20);
+    rawY.set(e.clientY - 80);
+  };
+
   useEffect(() => {
     const current = typewriterTexts[textIndex];
     const speed = isDeleting ? 40 : 80;
@@ -124,56 +137,71 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight tracking-tight mb-2">
-                {/* "Venkatesh" — hover reveals profile photo */}
+                {/* Hover entire name to reveal cursor-following circular profile photo */}
                 <span
-                  className="relative inline-block cursor-default select-none"
+                  className="cursor-none select-none"
                   onMouseEnter={() => setHoveredName(true)}
                   onMouseLeave={() => setHoveredName(false)}
+                  onMouseMove={handleMouseMove}
                 >
-                  <span className="text-white transition-colors duration-200 hover:text-cyber-green">
+                  <span className={`transition-colors duration-200 ${
+                    hoveredName ? 'text-cyber-green' : 'text-white'
+                  }`}>
                     Venkatesh
                   </span>
-
-                  {/* Profile photo tooltip */}
-                  <AnimatePresence>
-                    {hoveredName && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.75, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.75, y: 10 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                        className="absolute -top-56 left-0 z-50 pointer-events-none"
-                        aria-hidden="true"
-                      >
-                        {/* Glassmorphic card */}
-                        <div className="relative w-44 rounded-2xl overflow-hidden border border-cyber-green/30 shadow-[0_0_40px_rgba(16,185,129,0.35)] bg-black/60 backdrop-blur-xl">
-                          {/* Neon top bar */}
-                          <div className="h-1 w-full bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple" />
-                          <Image
-                            src="/images/Venkatesh.png"
-                            alt="Venkatesh Manipati"
-                            width={176}
-                            height={210}
-                            className="w-full object-cover object-top"
-                            priority
-                          />
-                          {/* Name tag overlay at bottom */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-3 py-2">
-                            <p className="text-cyber-green text-[10px] font-mono tracking-widest">VENKATESH MANIPATI</p>
-                            <p className="text-white/50 text-[9px] font-mono">MERN Stack Dev</p>
-                          </div>
-                        </div>
-                        {/* Arrow pointer */}
-                        <div className="w-3 h-3 mx-6 border-l border-b border-cyber-green/30 bg-black/60 rotate-[-45deg] -mt-1.5" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </span>
-                <br />
-                <span className="bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple bg-clip-text text-transparent">
-                  Manipati
+                  <br />
+                  <span className={`transition-colors duration-300 ${
+                    hoveredName
+                      ? 'bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent'
+                      : 'bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple bg-clip-text text-transparent'
+                  }`}>
+                    Manipati
+                  </span>
                 </span>
               </h1>
+
+              {/* Cursor-following circular profile photo — rendered in fixed portal */}
+              <AnimatePresence>
+                {hoveredName && (
+                  <motion.div
+                    className="fixed z-[9999] pointer-events-none"
+                    style={{ x, y }}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    aria-hidden="true"
+                  >
+                    {/* Outer neon ring */}
+                    <div className="relative w-28 h-28">
+                      {/* Spinning gradient ring */}
+                      <div
+                        className="absolute inset-0 rounded-full p-[3px]"
+                        style={{
+                          background:
+                            'conic-gradient(from 0deg, #10b981, #06b6d4, #a855f7, #10b981)',
+                          animation: 'spin 3s linear infinite',
+                        }}
+                      >
+                        <div className="w-full h-full rounded-full bg-obsidian" />
+                      </div>
+                      {/* Glow */}
+                      <div className="absolute inset-0 rounded-full blur-md bg-cyber-green/30" />
+                      {/* Photo */}
+                      <div className="absolute inset-[3px] rounded-full overflow-hidden">
+                        <Image
+                          src="/images/Venkatesh.png"
+                          alt="Venkatesh Manipati"
+                          fill
+                          className="object-cover object-top scale-110"
+                          sizes="112px"
+                          priority
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div className="mt-4 h-14 flex items-center">
                 <span className="text-2xl lg:text-3xl font-bold text-white/90 font-mono">
