@@ -178,7 +178,7 @@ export default function Skills() {
                     />
                   </div>
                   {/* Issuer logo */}
-                  <div className="w-9 h-9 rounded-lg bg-white/90 shadow p-1 flex items-center justify-center flex-shrink-0">
+                  {/* <div className="w-9 h-9 rounded-lg bg-white/90 shadow p-1 flex items-center justify-center flex-shrink-0">
                     <Image
                       src={cert.issuerLogo}
                       alt={cert.issuer}
@@ -186,7 +186,7 @@ export default function Skills() {
                       height={28}
                       className="object-contain w-full h-full"
                     />
-                  </div>
+                  </div>*/}
                 </div>
 
                 {/* Text */}

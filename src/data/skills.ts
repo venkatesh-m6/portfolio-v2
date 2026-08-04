@@ -2,10 +2,10 @@ import { Skill } from '@/types';
 
 export const skills: Skill[] = [
   // Languages
-  { name: 'Python', category: 'LANGUAGES', level: 90, color: '#3b82f6' },
+  { name: 'Java', category: 'LANGUAGES', level: 90, color: '#3b82f6' },
   { name: 'TypeScript', category: 'LANGUAGES', level: 85, color: '#06b6d4' },
   { name: 'JavaScript', category: 'LANGUAGES', level: 90, color: '#eab308' },
-  { name: 'Java', category: 'LANGUAGES', level: 75, color: '#f97316' },
+  { name: 'Python', category: 'LANGUAGES', level: 75, color: '#f97316' },
   { name: 'C++', category: 'LANGUAGES', level: 70, color: '#8b5cf6' },
   { name: 'C', category: 'LANGUAGES', level: 65, color: '#64748b' },
   { name: 'SQL', category: 'LANGUAGES', level: 80, color: '#10b981' },
