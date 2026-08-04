@@ -84,11 +84,11 @@ export default function Footer() {
           <p className="text-white/20 text-xs font-mono">
             Built with Next.js 14 · TypeScript · Tailwind CSS · Framer Motion
           </p>
-          <div className="flex items-center gap-1.5 text-white/20 text-xs font-mono">
+          {/*<div className="flex items-center gap-1.5 text-white/20 text-xs font-mono">
             <span>Made with</span>
             <Heart size={10} className="text-red-400/60 fill-red-400/60" />
             <span>in India</span>
-          </div>
+          </div>*/}
         </div>
       </div>
     </footer>
