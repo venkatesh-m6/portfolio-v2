@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
 
 const inter = Inter({
@@ -18,6 +19,11 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
   display: 'swap',
+});
+
+/* Dynamic import — cursor is client-only, skip SSR entirely */
+const CustomCursor = dynamic(() => import('@/components/CustomCursor'), {
+  ssr: false,
 });
 
 export const metadata: Metadata = {
@@ -64,6 +70,7 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-obsidian text-white antialiased overflow-x-hidden">
+        <CustomCursor />
         {children}
       </body>
     </html>

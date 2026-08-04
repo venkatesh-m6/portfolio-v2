@@ -22,6 +22,16 @@
   padding: 0;
 }
 
+/* ── Hide default cursor — replaced by CustomCursor component ── */
+/* Only on non-touch devices (pointer: fine = mouse/trackpad) */
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
