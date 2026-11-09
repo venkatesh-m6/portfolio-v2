@@ -69,7 +69,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="bg-obsidian text-white antialiased overflow-x-hidden">
+      <body className="bg-[#0c0d11] text-zinc-100 antialiased overflow-x-hidden">
         <CustomCursor />
         {children}
       </body>

@@ -32,7 +32,7 @@ export default function Navbar() {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { threshold: 0.4 }
+        { threshold: 0.35 }
       );
       obs.observe(el);
       observers.push(obs);
@@ -50,26 +50,26 @@ export default function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -80, opacity: 0 }}
+        initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={`fixed top-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-          scrolled ? 'w-[92%] max-w-4xl' : 'w-[96%] max-w-5xl'
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+          scrolled ? 'w-[92%] max-w-3xl' : 'w-[95%] max-w-4xl'
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_40px_rgba(16,185,129,0.08)]">
+        <div className="flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/8 bg-[#111319]/80 backdrop-blur-md">
           {/* Brand */}
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2.5 group"
             aria-label="Home"
           >
-            <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-cyber-green to-neon-purple flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.5)] group-hover:shadow-[0_0_24px_rgba(16,185,129,0.8)] transition-shadow duration-300">
-              <span className="text-xs font-black text-black tracking-tight font-mono">VM</span>
+            <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs font-mono font-medium text-white group-hover:border-emerald-500/50 transition-colors">
+              VM
             </div>
-            <span className="hidden sm:block text-sm font-semibold text-white/80 group-hover:text-cyber-green transition-colors duration-200 font-mono">
-              venkatesh.dev
+            <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
+              Venkatesh
             </span>
           </a>
 
@@ -79,10 +79,10 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   activeSection === link.href.slice(1)
-                    ? 'text-cyber-green bg-cyber-green/10 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
-                    : 'text-white/60 hover:text-white hover:bg-white/8'
+                    ? 'text-white bg-white/8'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/4'
                 }`}
               >
                 {link.label}
@@ -90,25 +90,23 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right Side */}
+          {/* Right Action */}
           <div className="flex items-center gap-2">
             <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); handleNavClick('#contact'); }}
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-cyber-green text-black hover:bg-emerald-400 transition-colors duration-200 shadow-[0_0_16px_rgba(16,185,129,0.4)]"
+              href="mailto:manipativenkatesh1@gmail.com"
+              className="hidden md:inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500 text-zinc-950 hover:bg-emerald-400 transition-colors"
             >
-              <span className="font-mono">Hire Me</span>
+              Contact
             </a>
 
             {/* Mobile Hamburger */}
             <button
-              id="mobile-menu-btn"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
             >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -119,29 +117,28 @@ export default function Navbar() {
         {mobileOpen && (
           <motion.div
             key="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
-            className="fixed top-24 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm"
           >
-            <div className="rounded-2xl border border-white/10 bg-obsidian/90 backdrop-blur-xl p-4 shadow-2xl">
+            <div className="rounded-xl border border-white/10 bg-[#111319]/95 backdrop-blur-xl p-3 shadow-xl">
               {navLinks.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href)}
-                  className="w-full text-left px-4 py-3 rounded-xl text-white/80 hover:text-cyber-green hover:bg-cyber-green/8 transition-all duration-200 font-mono text-sm"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
                 >
-                  <span className="text-cyber-green mr-2">{'>'}</span>
                   {link.label}
                 </button>
               ))}
-              <div className="mt-3 pt-3 border-t border-white/10">
+              <div className="mt-2 pt-2 border-t border-white/8">
                 <a
                   href="mailto:manipativenkatesh1@gmail.com"
-                  className="block w-full text-center py-3 rounded-xl bg-cyber-green text-black font-bold font-mono text-sm hover:bg-emerald-400 transition-colors"
+                  className="block w-full text-center py-2 rounded-lg bg-emerald-500 text-zinc-950 font-medium text-xs hover:bg-emerald-400 transition-colors"
                 >
-                  get_in_touch()
+                  Contact
                 </a>
               </div>
             </div>

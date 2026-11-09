@@ -7,85 +7,59 @@ export default function About() {
   const highlights = [
     {
       icon: User,
-      title: 'Who I Am',
-      body: 'Full-Stack Developer and AI/ML enthusiast with strong expertise in Python, React, OpenCV, and deep learning. Experienced in building production-ready web applications, AI pipelines, and research-driven solutions.',
-      color: '#10b981',
+      title: 'Profile & Focus',
+      body: 'Full-stack software developer with hands-on experience in building scalable web architectures, REST APIs, and integrated machine learning pipelines.',
     },
     {
       icon: GraduationCap,
-      title: 'Academic Background',
-      body: 'BTech Computer Science & Engineering at SRM University-AP (2023–2027), maintaining a CGPA of 7.99/10. Pursuing coursework in data structures, algorithms, machine learning, and distributed systems.',
-      color: '#a855f7',
+      title: 'Education',
+      body: 'B.Tech in Computer Science & Engineering at SRM University-AP (2023–2027), holding a 7.99 CGPA. Coursework in data structures, algorithms, databases, and applied AI.',
     },
     {
       icon: Code2,
-      title: 'What I Build',
-      body: 'From full-stack MERN applications to intelligent AI systems — I craft scalable solutions that solve real-world problems. Passionate about clean code, good UX, and shipping things that matter.',
-      color: '#06b6d4',
+      title: 'Engineering Principles',
+      body: 'Committed to production reliability, clear separation of concerns, and clean interface ergonomics. Experienced with the MERN stack, Next.js, and Python ML tooling.',
     },
   ];
 
   return (
-    <section id="about" className="relative py-28 px-6 overflow-hidden">
-      <div className="absolute top-1/4 right-0 w-72 h-72 rounded-full bg-neon-purple/8 blur-[100px] pointer-events-none" />
-
+    <section id="about" className="relative py-24 px-6 border-t border-white/6">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-14"
-        >
-          <p className="text-neon-purple font-mono text-sm tracking-widest uppercase mb-3">
-            // 01. about_me
-          </p>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white">
-            The{' '}
-            <span className="bg-gradient-to-r from-neon-purple to-deep-cyan bg-clip-text text-transparent">
-              Developer
-            </span>{' '}
-            Behind
+        {/* Section Header */}
+        <div className="mb-12">
+          <div className="text-xs font-mono text-emerald-400 mb-2">01 / background</div>
+          <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-zinc-100">
+            About &amp; Principles
           </h2>
-        </motion.div>
+          <p className="mt-2 text-sm text-zinc-400 max-w-lg">
+            Engineering foundation, university background, and core technical discipline.
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* 3-Column Cards */}
+        <div className="grid md:grid-cols-3 gap-5">
           {highlights.map((item, i) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                whileHover={{ y: -6 }}
-                className="group relative rounded-2xl border border-white/8 bg-white/4 backdrop-blur-xl p-6 overflow-hidden"
+                transition={{ duration: 0.35, delay: i * 0.08 }}
+                className="rounded-xl border border-white/8 bg-[#111319] p-5 flex flex-col justify-between hover:border-white/14 transition-colors"
               >
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: `radial-gradient(circle at 50% 0%, ${item.color}12, transparent 60%)`,
-                  }}
-                />
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-                  style={{ backgroundColor: `${item.color}18`, border: `1px solid ${item.color}35` }}
-                >
-                  <Icon size={20} style={{ color: item.color }} />
+                <div>
+                  <div className="w-8 h-8 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center text-zinc-300 mb-4">
+                    <Icon size={16} />
+                  </div>
+                  <h3 className="text-sm font-medium text-zinc-200 mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                    {item.body}
+                  </p>
                 </div>
-                <h3 className="text-white font-bold text-base mb-3 group-hover:text-white transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-white/50 text-sm leading-relaxed">{item.body}</p>
-
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`,
-                  }}
-                />
               </motion.div>
             );
           })}

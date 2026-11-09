@@ -4,13 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Root CSS Variables ── */
+/* ── Root Design Tokens (Graphite & Terminal Emerald) ── */
 :root {
-  --obsidian: #070709;
-  --cyber-green: #10b981;
-  --neon-purple: #a855f7;
-  --deep-cyan: #06b6d4;
-  --code-green: #34d399;
+  --bg-base: #0c0d11;
+  --surface-card: #13151b;
+  --surface-raised: #1b1e26;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.14);
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  
+  --accent: #10b981;
+  --accent-muted: rgba(16, 185, 129, 0.12);
+  --accent-border: rgba(16, 185, 129, 0.28);
 }
 
 /* ── Base Resets ── */
@@ -22,8 +30,7 @@
   padding: 0;
 }
 
-/* ── Hide default cursor — replaced by CustomCursor component ── */
-/* Only on non-touch devices (pointer: fine = mouse/trackpad) */
+/* ── Hide default cursor on mouse devices (handled by CustomCursor) ── */
 @media (pointer: fine) {
   *,
   *::before,
@@ -39,50 +46,52 @@ html {
 }
 
 body {
-  background-color: var(--obsidian);
-  color: #ffffff;
-  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
 }
 
 /* ── Selection ── */
 ::selection {
-  background: rgba(16, 185, 129, 0.3);
-  color: #fff;
+  background: rgba(16, 185, 129, 0.25);
+  color: #ffffff;
 }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #070709;
+  background: var(--bg-base);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.3);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.6);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Subtle Technical Grid Background ── */
+.bg-tech-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* ── Dot-grid Background ── */
 .bg-dot-grid {
-  background-image: radial-gradient(circle, rgba(16, 185, 129, 0.07) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-/* ── Glassmorphism Utility ── */
-.glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* ── Neon Text ── */
-.text-neon {
-  text-shadow: 0 0 10px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4);
+/* ── Clean Card Utility ── */
+.craft-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: 12px;
 }
 
 /* ── Marquee Animation ── */
@@ -101,36 +110,6 @@ body {
   animation-play-state: paused;
 }
 
-/* ── Blink Cursor ── */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-.animate-blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* ── Float Animation ── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-14px); }
-}
-
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-
-/* ── Glow Pulse ── */
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); }
-  50%       { box-shadow: 0 0 40px rgba(16, 185, 129, 0.55); }
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
 /* ── Utility: Line clamp ── */
 .line-clamp-3 {
   display: -webkit-box;
@@ -139,16 +118,10 @@ body {
   overflow: hidden;
 }
 
-/* ── Focus styles for accessibility ── */
+/* ── Accessible Focus States ── */
 a:focus-visible,
 button:focus-visible {
-  outline: 2px solid var(--cyber-green);
-  outline-offset: 3px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
   border-radius: 6px;
-}
-
-/* ── Spin (for profile avatar ring) ── */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
 }

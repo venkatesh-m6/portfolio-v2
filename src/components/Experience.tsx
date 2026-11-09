@@ -14,13 +14,6 @@ const filters: { key: FilterType; label: string }[] = [
   { key: 'HACKATHON', label: 'Hackathons' },
 ];
 
-const typeColors: Record<string, string> = {
-  INTERNSHIP: '#10b981',
-  HACKATHON: '#a855f7',
-  PROJECT: '#06b6d4',
-  RESEARCH: '#f59e0b',
-};
-
 export default function ExperienceSection() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('ALL');
 
@@ -30,40 +23,29 @@ export default function ExperienceSection() {
       : experiences.filter((e) => e.type === activeFilter);
 
   return (
-    <section id="experience" className="relative py-28 px-6 overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/2 right-0 w-80 h-80 rounded-full bg-neon-purple/8 blur-[100px] pointer-events-none" />
-
+    <section id="experience" className="relative py-24 px-6 border-t border-white/6">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <p className="text-neon-purple font-mono text-sm tracking-widest uppercase mb-3">
-            // 03. timeline
-          </p>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-white">
-            Experience &amp;{' '}
-            <span className="bg-gradient-to-r from-neon-purple to-deep-cyan bg-clip-text text-transparent">
-              Highlights
-            </span>
+        {/* Section Header */}
+        <div className="mb-10">
+          <div className="text-xs font-mono text-emerald-400 mb-2">03 / history</div>
+          <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-zinc-100">
+            Experience &amp; Milestones
           </h2>
-        </motion.div>
+          <p className="mt-2 text-sm text-zinc-400 max-w-lg">
+            Engineering internships, hackathon builds, and academic milestones.
+          </p>
+        </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-12">
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap gap-1.5 mb-10">
           {filters.map((f) => (
             <button
               key={f.key}
               onClick={() => setActiveFilter(f.key)}
-              className={`px-4 py-2 rounded-full text-sm font-mono transition-all duration-200 border ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
                 activeFilter === f.key
-                  ? 'border-neon-purple bg-neon-purple/10 text-neon-purple shadow-[0_0_12px_rgba(168,85,247,0.2)]'
-                  : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white/80'
+                  ? 'bg-white/10 text-white border border-white/14'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/4 border border-transparent'
               }`}
             >
               {f.label}
@@ -72,133 +54,99 @@ export default function ExperienceSection() {
         </div>
 
         {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-neon-purple/60 via-white/10 to-transparent" />
+        <div className="relative pl-6 border-l border-white/8 space-y-8">
+          {filtered.map((exp, i) => (
+            <motion.div
+              key={exp.id}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.06 }}
+              className="relative"
+            >
+              {/* Timeline Indicator Dot */}
+              <div className="absolute -left-[31px] top-6 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-4 ring-[#0c0d11]" />
 
-          <div className="space-y-8">
-            {filtered.map((exp, i) => {
-              const dotColor = typeColors[exp.type] ?? '#10b981';
-              return (
-                <motion.div
-                  key={exp.id}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="relative pl-16"
-                >
-                  {/* Timeline dot */}
-                  <div
-                    className="absolute left-4 top-6 w-4 h-4 rounded-full -translate-x-1/2 border-2 shadow-lg"
-                    style={{
-                      borderColor: dotColor,
-                      backgroundColor: `${dotColor}30`,
-                      boxShadow: `0 0 12px ${dotColor}60`,
-                    }}
-                  />
-
-                  {/* Card */}
-                  <div className="group rounded-2xl border border-white/8 bg-white/4 backdrop-blur-xl p-6 hover:border-white/18 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] transition-all duration-300">
-                    <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                      <div className="flex items-center gap-4">
-                        {/* Company logo */}
-                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
-                          {exp.logo ? (
-                            <Image
-                              src={exp.logo}
-                              alt={exp.company}
-                              fill
-                              className="object-contain p-1"
-                              sizes="48px"
-                            />
-                          ) : (
-                            <span className="text-white/60 font-mono font-bold text-xs">
-                              {exp.company.slice(0, 2).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="text-white font-bold text-lg group-hover:text-neon-purple transition-colors duration-200">
-                            {exp.role}
-                          </h3>
-                          <p className="text-white/50 text-sm font-mono">{exp.company}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-end gap-2">
-                        <span
-                          className="text-xs font-mono px-3 py-1 rounded-full"
-                          style={{
-                            color: dotColor,
-                            backgroundColor: `${dotColor}18`,
-                            border: `1px solid ${dotColor}35`,
-                          }}
-                        >
-                          {exp.type}
+              {/* Card */}
+              <div className="rounded-xl border border-white/8 bg-[#111319] p-5 hover:border-white/16 transition-colors">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {exp.logo ? (
+                        <Image
+                          src={exp.logo}
+                          alt={exp.company}
+                          width={32}
+                          height={32}
+                          className="object-contain"
+                        />
+                      ) : (
+                        <span className="text-xs font-mono font-medium text-zinc-400">
+                          {exp.company.slice(0, 2).toUpperCase()}
                         </span>
-                        <span className="text-white/35 text-xs font-mono">{exp.period}</span>
-                      </div>
+                      )}
                     </div>
-
-                    {/* Description bullets */}
-                    <ul className="space-y-2 mb-4">
-                      {exp.description.map((point, j) => (
-                        <li key={j} className="flex gap-3 text-white/55 text-sm leading-relaxed">
-                          <span className="text-cyber-green mt-1 flex-shrink-0">▸</span>
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {exp.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-0.5 rounded text-[10px] font-mono text-white/40 border border-white/10 bg-white/4"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div>
+                      <h3 className="text-base font-medium text-zinc-100">
+                        {exp.role}
+                      </h3>
+                      <p className="text-xs font-mono text-zinc-400">{exp.company}</p>
                     </div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
+
+                  <div className="flex items-center gap-2 text-xs font-mono">
+                    <span className="px-2 py-0.5 rounded bg-white/4 border border-white/6 text-zinc-400">
+                      {exp.type.toLowerCase()}
+                    </span>
+                    <span className="text-zinc-500">{exp.period}</span>
+                  </div>
+                </div>
+
+                {/* Bullets */}
+                <ul className="space-y-1.5 mb-4 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                  {exp.description.map((point, j) => (
+                    <li key={j} className="flex items-start gap-2">
+                      <span className="text-emerald-500 mt-1 select-none text-xs">▸</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/6">
+                  {exp.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono text-zinc-400 bg-white/3 border border-white/6"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Education card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-16 rounded-2xl border border-deep-cyan/25 bg-deep-cyan/5 p-6"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-deep-cyan/15 border border-deep-cyan/30 flex items-center justify-center flex-shrink-0">
-              <span className="text-deep-cyan font-mono font-bold text-xs">BTech</span>
-            </div>
+        {/* Education Highlight Card */}
+        <div className="mt-12 rounded-xl border border-white/8 bg-[#111319] p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <p className="text-[10px] font-mono text-deep-cyan tracking-widest uppercase mb-1">
-                Education
-              </p>
-              <h3 className="text-white font-bold text-lg">
-                Bachelor of Technology — Computer Science & Engineering
+              <div className="text-xs font-mono text-emerald-400 mb-1">Degree Programme</div>
+              <h3 className="text-base font-medium text-zinc-100">
+                Bachelor of Technology in Computer Science &amp; Engineering
               </h3>
-              <p className="text-white/50 text-sm font-mono mt-1">
+              <p className="text-xs text-zinc-400 font-mono mt-1">
                 SRM University-AP · 2023 – 2027
               </p>
-              <div className="mt-3 flex items-center gap-3">
-                <span className="text-xs font-mono text-white/40">CGPA:</span>
-                <span className="text-xl font-extrabold text-cyber-green font-mono">7.99</span>
-                <span className="text-xs text-white/30 font-mono">/ 10.0</span>
-              </div>
+            </div>
+            <div className="flex items-baseline gap-2 font-mono sm:text-right">
+              <span className="text-xs text-zinc-500">CGPA:</span>
+              <span className="text-2xl font-medium text-emerald-400 tabular-nums">7.99</span>
+              <span className="text-xs text-zinc-500">/ 10.0</span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

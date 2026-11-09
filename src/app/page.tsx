@@ -9,21 +9,21 @@ import Skills from '@/components/Skills';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 
-// Dynamically import canvas-heavy component to avoid SSR issues
+// Ambient technical canvas
 const MatrixBackground = dynamic(() => import('@/components/MatrixBackground'), {
   ssr: false,
 });
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-obsidian">
-      {/* Global dot-grid overlay */}
-      <div className="fixed inset-0 bg-dot-grid pointer-events-none z-0 opacity-40" />
+    <main className="relative min-h-screen bg-[#0c0d11] text-zinc-100 selection:bg-emerald-500/20 selection:text-white">
+      {/* Structural architectural grid */}
+      <div className="fixed inset-0 bg-tech-grid pointer-events-none z-0 opacity-40" />
 
-      {/* Matrix rain canvas */}
+      {/* Subtle ambient canvas */}
       <MatrixBackground />
 
-      {/* Main content above backgrounds */}
+      {/* Main page content */}
       <div className="relative z-10">
         <Navbar />
         <Hero />

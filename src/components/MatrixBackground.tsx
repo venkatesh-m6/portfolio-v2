@@ -2,6 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 
+/**
+ * Subtle technical ambient canvas:
+ * Very faint, quiet grid points with rare slow pulses, replacing neon matrix rain.
+ */
 export default function MatrixBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -12,45 +16,42 @@ export default function MatrixBackground() {
     if (!ctx) return;
 
     let animationId: number;
-    let cols: number;
-    let drops: number[];
 
-    const FONT_SIZE = 14;
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ'.split('');
-
-    function resize() {
-      if (!canvas) return;
+    const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      cols = Math.floor(canvas.width / FONT_SIZE);
-      drops = Array(cols).fill(1);
-    }
+    };
 
-    function draw() {
-      if (!ctx || !canvas) return;
-      ctx.fillStyle = 'rgba(7, 7, 9, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    resize();
+    window.addEventListener('resize', resize);
 
-      ctx.font = `${FONT_SIZE}px "JetBrains Mono", monospace`;
+    let tick = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      tick += 0.005;
 
-      for (let i = 0; i < drops.length; i++) {
-        const char = chars[Math.floor(Math.random() * chars.length)];
-        const alpha = Math.random() * 0.3 + 0.03;
-        ctx.fillStyle = `rgba(16, 185, 129, ${alpha})`;
-        ctx.fillText(char, i * FONT_SIZE, drops[i] * FONT_SIZE);
+      const spacing = 48;
+      const cols = Math.ceil(canvas.width / spacing);
+      const rows = Math.ceil(canvas.height / spacing);
 
-        if (drops[i] * FONT_SIZE > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+      for (let x = 0; x <= cols; x++) {
+        for (let y = 0; y <= rows; y++) {
+          const posX = x * spacing;
+          const posY = y * spacing;
+
+          // Gentle spatial wave to give a quiet sense of life without distracting motion
+          const dist = Math.sin(x * 0.15 + tick) * Math.cos(y * 0.15 + tick);
+          const alpha = 0.025 + Math.max(0, dist * 0.035);
+
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.fillRect(posX, posY, 1, 1);
         }
-        drops[i]++;
       }
 
       animationId = requestAnimationFrame(draw);
-    }
+    };
 
-    resize();
     draw();
-    window.addEventListener('resize', resize);
 
     return () => {
       cancelAnimationFrame(animationId);
@@ -61,7 +62,7 @@ export default function MatrixBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 opacity-25 pointer-events-none"
+      className="fixed inset-0 pointer-events-none z-0"
       aria-hidden="true"
     />
   );

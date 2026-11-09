@@ -1,102 +1,45 @@
 'use client';
 
+import { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { ArrowRight, Mail, Code2, Brain, Database, Cloud } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { ArrowUpRight, FileText, Mail, Layers, Terminal, CheckCircle2 } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from '@/components/Icons';
 import Image from 'next/image';
 
-const GithubIcon = () => (
-  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12" />
-  </svg>
-);
-
-const LinkedinIcon = () => (
-  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-  </svg>
-);
-
-const floatingCards = [
+const liveProjects = [
   {
-    icon: Code2,
-    title: 'Full-Stack Dev',
-    subtitle: 'MERN • Next.js',
-    color: '#10b981',
-    glowColor: 'rgba(16,185,129,0.25)',
-    delay: 0,
+    name: 'SRM Stationery Hub',
+    status: '200 OK',
+    type: 'Full-Stack Platform',
+    stack: ['React', 'Node.js', 'Express', 'MongoDB'],
+    liveUrl: 'https://srmap-stationery-hub.onrender.com',
+    desc: 'Campus stationery procurement system handling real-time order tracking and store inventory.',
   },
   {
-    icon: Brain,
-    title: 'AI / ML',
-    subtitle: 'TensorFlow • OpenCV',
-    color: '#a855f7',
-    glowColor: 'rgba(168,85,247,0.25)',
-    delay: 0.5,
+    name: 'Resume Screening System',
+    status: 'Online',
+    type: 'Applied ML Pipeline',
+    stack: ['Python', 'Streamlit', 'NLP', 'Scikit-learn'],
+    liveUrl: 'https://resumescreeningsystem-mxjo2nvhcwe3raz62yapfj.streamlit.app/',
+    desc: 'Automated candidate ranking engine utilizing TF-IDF vectorization and cosine similarity scoring.',
   },
-  {
-    icon: Database,
-    title: 'Database Design',
-    subtitle: 'MongoDB • PostgreSQL',
-    color: '#06b6d4',
-    glowColor: 'rgba(6,182,212,0.25)',
-    delay: 1.0,
-  },
-  {
-    icon: Cloud,
-    title: 'Cloud & DevOps',
-    subtitle: 'Docker • Git',
-    color: '#f59e0b',
-    glowColor: 'rgba(245,158,11,0.25)',
-    delay: 1.5,
-  },
-];
-
-const typewriterTexts = [
-  'Building Next-Gen Systems.',
-  'Crafting MERN Experiences.',
-  'Deploying AI Solutions.',
-  'Architecting the Future.',
 ];
 
 export default function Hero() {
-  const [textIndex, setTextIndex] = useState(0);
-  const [displayed, setDisplayed] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredName, setHoveredName] = useState(false);
+  const [activeTab, setActiveTab] = useState<'systems' | 'stack' | 'log'>('systems');
 
-  // Cursor-following spring values
+  // Smooth cursor tracking for profile photo reveal
   const rawX = useMotionValue(-300);
   const rawY = useMotionValue(-300);
-  const springConfig = { damping: 20, stiffness: 280, mass: 0.6 };
-  const x = useSpring(rawX, springConfig);
-  const y = useSpring(rawY, springConfig);
+  const springConfig = { damping: 24, stiffness: 320, mass: 0.5 };
+  const avatarX = useSpring(rawX, springConfig);
+  const avatarY = useSpring(rawY, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    // Offset so avatar centre sits above-right of cursor tip
-    rawX.set(e.clientX + 20);
-    rawY.set(e.clientY - 80);
+    rawX.set(e.clientX + 16);
+    rawY.set(e.clientY - 96);
   };
-
-  useEffect(() => {
-    const current = typewriterTexts[textIndex];
-    const speed = isDeleting ? 40 : 80;
-
-    const timer = setTimeout(() => {
-      if (!isDeleting && displayed.length < current.length) {
-        setDisplayed(current.slice(0, displayed.length + 1));
-      } else if (isDeleting && displayed.length > 0) {
-        setDisplayed(current.slice(0, displayed.length - 1));
-      } else if (!isDeleting && displayed.length === current.length) {
-        setTimeout(() => setIsDeleting(true), 2000);
-      } else if (isDeleting && displayed.length === 0) {
-        setIsDeleting(false);
-        setTextIndex((prev) => (prev + 1) % typewriterTexts.length);
-      }
-    }, speed);
-
-    return () => clearTimeout(timer);
-  }, [displayed, isDeleting, textIndex]);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -105,259 +48,317 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-28 pb-16 overflow-hidden"
+      className="relative min-h-[92vh] flex items-center justify-center px-6 pt-32 pb-20 overflow-hidden"
     >
-      {/* Ambient radial glows */}
-      <div className="absolute top-1/4 -left-40 w-96 h-96 rounded-full bg-cyber-green/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-neon-purple/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-deep-cyan/5 blur-[160px] pointer-events-none" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-5xl w-full mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left — Text */}
-          <div>
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyber-green/30 bg-cyber-green/8 mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-cyber-green animate-pulse" />
-              <span className="text-cyber-green text-xs font-mono tracking-widest uppercase">
-                Available for Opportunities
+      <div className="relative z-10 max-w-6xl w-full mx-auto">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+          
+          {/* Left Column (58% desktop): Positioning & Content */}
+          <div className="lg:col-span-7">
+            {/* Status Indicator */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/8 bg-white/4 mb-6">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="text-zinc-300 text-xs font-mono">
+                Available for engineering opportunities
               </span>
-            </motion.div>
+            </div>
 
-            {/* Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight tracking-tight mb-2">
-                {/* Hover entire name to reveal cursor-following circular profile photo */}
+            {/* Headline with interactive profile photo reveal */}
+            <div className="relative">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-zinc-100 leading-[1.08]">
                 <span
-                  className="cursor-none select-none"
+                  className="cursor-none select-none border-b border-dashed border-zinc-600 hover:border-emerald-400 pb-0.5 transition-colors"
                   onMouseEnter={() => setHoveredName(true)}
                   onMouseLeave={() => setHoveredName(false)}
                   onMouseMove={handleMouseMove}
                 >
-                  <span className={`transition-colors duration-200 ${
-                    hoveredName ? 'text-cyber-green' : 'text-white'
-                  }`}>
-                    Venkatesh
-                  </span>
-                  <br />
-                  <span className={`transition-colors duration-300 ${
-                    hoveredName
-                      ? 'bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent'
-                      : 'bg-gradient-to-r from-cyber-green via-deep-cyan to-neon-purple bg-clip-text text-transparent'
-                  }`}>
-                    Manipati
-                  </span>
+                  Venkatesh Manipati
                 </span>
               </h1>
 
-              {/* Cursor-following circular profile photo — rendered in fixed portal */}
+              {/* Cursor-following circular profile photo */}
               <AnimatePresence>
                 {hoveredName && (
                   <motion.div
                     className="fixed z-[9999] pointer-events-none"
-                    style={{ x, y }}
-                    initial={{ opacity: 0, scale: 0 }}
+                    style={{ x: avatarX, y: avatarY }}
+                    initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
                     aria-hidden="true"
                   >
-                    {/* Outer neon ring */}
-                    <div className="relative w-28 h-28">
-                      {/* Spinning gradient ring */}
-                      <div
-                        className="absolute inset-0 rounded-full p-[3px]"
-                        style={{
-                          background:
-                            'conic-gradient(from 0deg, #10b981, #06b6d4, #a855f7, #10b981)',
-                          animation: 'spin 3s linear infinite',
-                        }}
-                      >
-                        <div className="w-full h-full rounded-full bg-obsidian" />
-                      </div>
-                      {/* Glow */}
-                      <div className="absolute inset-0 rounded-full blur-md bg-cyber-green/30" />
-                      {/* Photo */}
-                      <div className="absolute inset-[3px] rounded-full overflow-hidden">
+                    <div className="relative flex flex-col items-center">
+                      <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/20 bg-[#14161d] shadow-2xl">
                         <Image
                           src="/images/Venkatesh.png"
                           alt="Venkatesh Manipati"
-                          fill
-                          className="object-cover object-top scale-110"
-                          sizes="112px"
+                          width={96}
+                          height={96}
+                          className="w-full h-full object-cover object-top scale-105"
                           priority
                         />
+                      </div>
+                      <div className="mt-1.5 px-2 py-0.5 rounded bg-[#101216] border border-white/10 text-[10px] font-mono text-zinc-300 whitespace-nowrap">
+                        B.Tech CSE &apos;27
                       </div>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              <div className="mt-4 h-14 flex items-center">
-                <span className="text-2xl lg:text-3xl font-bold text-white/90 font-mono">
-                  {displayed}
-                  <span className="animate-blink text-cyber-green ml-0.5">|</span>
-                </span>
-              </div>
-            </motion.div>
+              <p className="mt-3 text-lg sm:text-xl font-normal text-zinc-300">
+                Full-Stack Engineer &amp; Applied ML Developer
+              </p>
+            </div>
 
-            {/* Description */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-4 text-white/50 text-lg leading-relaxed max-w-lg"
-            >
-              BTech CSE Final Year @ SRM University-AP · Full-Stack Developer & AI/ML Enthusiast.
-              Building production-grade systems that scale.
-            </motion.p>
+            {/* Subtitle / Bio */}
+            <p className="mt-5 text-zinc-400 text-sm sm:text-base leading-relaxed max-w-xl">
+              Final-year Computer Science undergraduate at SRM University-AP. Focused on distributed full-stack architecture with React and Node.js, and deploying applied machine learning pipelines.
+            </p>
 
-            {/* Stats Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-8 flex flex-wrap gap-6"
-            >
-              {[
-                { value: '5+', label: 'Projects Built' },
-                { value: '3+', label: 'Internships' },
-                { value: '7.99', label: 'CGPA' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-2xl font-extrabold text-cyber-green font-mono">{stat.value}</div>
-                  <div className="text-xs text-white/40 font-mono mt-0.5">{stat.label}</div>
+            {/* Tabular Stats Grid */}
+            <div className="mt-8 grid grid-cols-3 gap-4 max-w-md border-y border-white/8 py-4">
+              <div>
+                <div className="text-xl sm:text-2xl font-medium text-zinc-100 font-mono tabular-nums">
+                  5+
                 </div>
-              ))}
-            </motion.div>
+                <div className="text-xs text-zinc-500 mt-0.5">
+                  Production projects
+                </div>
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-medium text-zinc-100 font-mono tabular-nums">
+                  3
+                </div>
+                <div className="text-xs text-zinc-500 mt-0.5">
+                  Technical internships
+                </div>
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-medium text-zinc-100 font-mono tabular-nums">
+                  7.99
+                </div>
+                <div className="text-xs text-zinc-500 mt-0.5">
+                  CGPA / 10.0
+                </div>
+              </div>
+            </div>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-8 flex flex-wrap gap-4"
-            >
+            {/* Actions */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
                 onClick={() => scrollTo('projects')}
-                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-cyber-green to-deep-cyan text-black font-bold text-sm shadow-[0_0_24px_rgba(16,185,129,0.4)] hover:shadow-[0_0_36px_rgba(16,185,129,0.7)] hover:scale-105 transition-all duration-300"
+                className="px-4 py-2.5 rounded-lg bg-emerald-500 text-zinc-950 font-medium text-xs sm:text-sm hover:bg-emerald-400 transition-colors"
               >
-                Explore Projects
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                View Selected Work
               </button>
+              <a
+                href="/venkatesh_resume.pdf"
+                download="Venkatesh_Manipati_Resume.pdf"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 bg-white/4 text-zinc-200 text-xs sm:text-sm font-medium hover:bg-white/8 hover:text-white transition-colors"
+              >
+                <FileText size={15} />
+                Download Resume
+              </a>
               <button
                 onClick={() => scrollTo('contact')}
-                className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 bg-white/5 text-white font-semibold text-sm backdrop-blur-sm hover:border-cyber-green/50 hover:bg-cyber-green/8 hover:text-cyber-green transition-all duration-300"
+                className="px-4 py-2.5 rounded-lg text-zinc-400 text-xs sm:text-sm font-medium hover:text-white transition-colors"
+              >
+                Contact
+              </button>
+            </div>
+
+            {/* Social Icons & Signature */}
+            <div className="mt-8 flex items-center gap-4 text-xs font-mono text-zinc-500">
+              <span>// links</span>
+              <a
+                href="https://github.com/venkatesh-614"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="GitHub"
+              >
+                <GithubIcon size={16} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/manipati-venkatesh-468318373/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <LinkedinIcon size={16} />
+              </a>
+              <a
+                href="mailto:manipativenkatesh1@gmail.com"
+                className="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="Email"
               >
                 <Mail size={16} />
-                Get in Touch
-              </button>
-            </motion.div>
-
-            {/* Social Links */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="mt-8 flex items-center gap-4"
-            >
-              <span className="text-white/30 text-xs font-mono">// connect</span>
-              {[
-                { icon: GithubIcon, href: 'https://github.com/venkatesh-614', label: 'GitHub' },
-                {
-                  icon: LinkedinIcon,
-                  href: 'https://www.linkedin.com/in/manipati-venkatesh-468318373/',
-                  label: 'LinkedIn',
-                },
-              ].map(({ icon: Icon, href, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="p-2.5 rounded-full border border-white/10 text-white/50 hover:text-cyber-green hover:border-cyber-green/40 hover:bg-cyber-green/8 transition-all duration-200"
-                >
-                  <Icon />
-                </a>
-              ))}
-            </motion.div>
+              </a>
+            </div>
           </div>
 
-          {/* Right — Floating Cards Grid */}
-          <div className="hidden lg:grid grid-cols-2 gap-4">
-            {floatingCards.map((card, i) => {
-              const Icon = card.icon;
-              return (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                    y: [0, -12, 0],
-                  }}
-                  transition={{
-                    opacity: { duration: 0.5, delay: 0.2 + i * 0.15 },
-                    scale: { duration: 0.5, delay: 0.2 + i * 0.15 },
-                    y: {
-                      duration: 3 + i * 0.5,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: card.delay,
-                    },
-                  }}
-                  whileHover={{ scale: 1.05, rotate: 1 }}
-                  className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 cursor-default overflow-hidden group"
-                  style={{ boxShadow: `0 0 30px ${card.glowColor}` }}
-                >
-                  {/* Radial hover glow */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: `radial-gradient(circle at 50% 50%, ${card.glowColor}, transparent 70%)`,
-                    }}
-                  />
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                    style={{ backgroundColor: `${card.color}20`, border: `1px solid ${card.color}40` }}
+          {/* Right Column (42% desktop): Production System Inspector (The Moment) */}
+          <div className="lg:col-span-5">
+            <div className="rounded-xl border border-white/8 bg-[#111319] overflow-hidden shadow-2xl">
+              
+              {/* Window Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/6 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-600" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                  <span className="ml-2 text-xs font-mono text-zinc-400">
+                    system-inspector
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  live
+                </div>
+              </div>
+
+              {/* Inspector Tabs */}
+              <div className="flex border-b border-white/6 px-3 bg-white/[0.01]">
+                {[
+                  { key: 'systems', label: 'Deployed Systems' },
+                  { key: 'stack', label: 'Architecture' },
+                  { key: 'log', label: 'Runtime Log' },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key as typeof activeTab)}
+                    className={`px-3 py-2 text-xs font-mono border-b-2 transition-colors ${
+                      activeTab === tab.key
+                        ? 'border-emerald-500 text-white font-medium'
+                        : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                    }`}
                   >
-                    <Icon size={20} style={{ color: card.color }} />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-4 sm:p-5 min-h-[310px] flex flex-col justify-between">
+                
+                {activeTab === 'systems' && (
+                  <div className="space-y-4">
+                    {liveProjects.map((p) => (
+                      <div
+                        key={p.name}
+                        className="p-3.5 rounded-lg border border-white/6 bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-zinc-200">
+                                {p.name}
+                              </span>
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                {p.status}
+                              </span>
+                            </div>
+                            <div className="text-xs text-zinc-400 mt-1">
+                              {p.desc}
+                            </div>
+                          </div>
+                          <a
+                            href={p.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1 rounded text-zinc-400 hover:text-emerald-400 transition-colors"
+                            aria-label={`Open ${p.name}`}
+                          >
+                            <ArrowUpRight size={16} />
+                          </a>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {p.stack.map((tech) => (
+                            <span
+                              key={tech}
+                              className="px-2 py-0.5 rounded text-[11px] font-mono bg-white/4 text-zinc-400"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-white font-semibold text-sm">{card.title}</p>
-                  <p className="text-white/40 text-xs font-mono mt-1">{card.subtitle}</p>
+                )}
 
-                  {/* Corner accent */}
-                  <div
-                    className="absolute top-0 right-0 w-16 h-16 rounded-bl-full opacity-20"
-                    style={{ backgroundColor: card.color }}
-                  />
-                </motion.div>
-              );
-            })}
+                {activeTab === 'stack' && (
+                  <div className="space-y-3.5 text-xs font-mono">
+                    <div>
+                      <div className="text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                        <Layers size={13} className="text-emerald-400" />
+                        <span>Core Engineering</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['TypeScript', 'React.js', 'Next.js 14', 'Node.js', 'Express', 'Tailwind CSS'].map((item) => (
+                          <span key={item} className="px-2 py-1 rounded bg-white/4 text-zinc-300 border border-white/6">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                        <CheckCircle2 size={13} className="text-emerald-400" />
+                        <span>Data &amp; Machine Learning</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['Python', 'TensorFlow', 'OpenCV', 'Scikit-Learn', 'MongoDB', 'PostgreSQL'].map((item) => (
+                          <span key={item} className="px-2 py-1 rounded bg-white/4 text-zinc-300 border border-white/6">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-zinc-400 mb-1.5 flex items-center gap-1.5">
+                        <Terminal size={13} className="text-emerald-400" />
+                        <span>Infrastructure</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['Docker', 'Git', 'Vercel', 'Render', 'Streamlit Cloud'].map((item) => (
+                          <span key={item} className="px-2 py-1 rounded bg-white/4 text-zinc-300 border border-white/6">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'log' && (
+                  <div className="p-3 rounded-lg bg-[#0a0b0e] border border-white/6 font-mono text-xs text-zinc-300 space-y-1.5">
+                    <div className="text-zinc-400">$ node --version &amp;&amp; git status</div>
+                    <div className="text-zinc-400">v20.12.2 (LTS) · branch: main (clean)</div>
+                    <div className="text-emerald-400 pt-1">✓ Build artifact verified</div>
+                    <div className="text-zinc-400">→ Route (app): / (19.9 kB) pre-rendered</div>
+                    <div className="text-zinc-400">→ Deploy latency: 24ms (BOM1 edge)</div>
+                    <div className="text-zinc-400 pt-1">
+                      Target: venkatesh-manipati.vercel.app
+                    </div>
+                  </div>
+                )}
+
+                {/* Card Footer / Signature */}
+                <div className="mt-4 pt-3 border-t border-white/6 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                  <span>commit: 19bd311</span>
+                  <span>env: production</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-white/30 text-xs font-mono">scroll_down</span>
-          <div className="w-px h-10 bg-gradient-to-b from-white/20 to-transparent" />
-        </motion.div>
+        </div>
       </div>
     </section>
   );
